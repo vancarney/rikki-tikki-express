@@ -1,5 +1,5 @@
-Adapter = require 'rikki-tikki-route-adapter'
-class ExpressAdapter extends Adapter
+RikkiTikkiAPI = module.parent.exports.RikkiTikkiAPI || module.parent.exports
+class ExpressAdapter extends RikkiTikkiAPI.base_classes.AbstractAdapter
   required:['app']
   addRoute:(route, method, handler)->
     @params.app[method]? route, handler || @responseHandler
@@ -14,3 +14,5 @@ class ExpressAdapter extends Adapter
     # not implemented
     false
 module.exports = ExpressAdapter
+module.exports.use = (express)=>
+  new ExpressAdapter app:express

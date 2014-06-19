@@ -16,7 +16,6 @@
     "url": "github.com/vancarney/rikki-tikki-express.git"
   },
   "dependencies": {
-    "rikki-tikki-route-adapter":"git+https://github.com/vancarney/rikki-tikki-route-adapter.git"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",

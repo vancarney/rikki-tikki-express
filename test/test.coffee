@@ -1,8 +1,9 @@
 fs                = require 'fs'
 path              = require 'path'
 (chai             = require 'chai').should()
+module.exports.RikkiTikkiAPI = API = require 'rikki-tikki'
+express           = require 'express'
 Adapter           = require '../src/ExpressAdapter'
-
 describe 'ExpressAdapter Test Suite', ->
   clazz = class Tester extends Adapter
   describe 'ExpressAdapter Overrides', =>
@@ -23,4 +24,12 @@ describe 'ExpressAdapter Test Suite', ->
       chai.expect(-> 
         new clazz(app:{}).addRoute()
       ).to.not.throw()
+  describe 'ExpressAdapter Usage', =>
+    it 'should create an Adapter Instance', =>
+      (@adapter = Adapter.use app = express()).params.app.should.equal app
+    it 'should register with an API Instance', =>
+      (api = new API
+        adapter:@adapter   
+      ).__adapter.should.equal @adapter
+    
 
