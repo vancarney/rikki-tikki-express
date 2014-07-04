@@ -1,35 +1,41 @@
 fs                = require 'fs'
 path              = require 'path'
 (chai             = require 'chai').should()
-module.exports.RikkiTikkiAPI = API = require 'rikki-tikki'
+API               = require 'rikki-tikki'
+{AbstractRoute}   = API.base_classes
 express           = require 'express'
+# cookieParser      = require 'cookie-parser'
+# bodyParser        = require 'body-parser'
+# methodOverride    = require 'method-override'
+# errorhandler      = require 'errorhandler'
+# session           = require 'express-session'
 Adapter           = require '../src/ExpressAdapter'
 describe 'ExpressAdapter Test Suite', ->
-  clazz = class Tester extends Adapter
-  describe 'ExpressAdapter Overrides', =>
-    it 'should require app to be passed in constructor params object', =>
-      chai.expect(-> 
-        new clazz().requestHandler()
-      ).to.throw 'required param \'app\' was not defined in the adapter params object'
-  describe 'ExpressAdapter Overrides', =>
-    it 'should require method requestHandler to be overriden', =>
-      chai.expect(-> 
-        new clazz(app:{}).requestHandler()
-      ).to.not.throw()
-    it 'should require method responseHandler to be overriden', =>
-      chai.expect(-> 
-        new clazz(app:{}).responseHandler {setHeader:(->false), send:(->false)}, {status:200}
-      ).to.not.throw()
-    it 'should require method addRoute to be overriden', =>
-      chai.expect(-> 
-        new clazz(app:{}).addRoute()
-      ).to.not.throw()
-  describe 'ExpressAdapter Usage', =>
+  clazz   = class Tester extends Adapter
+  API.CONFIG_PATH = "#{__dirname}/configs"
+  API.SCHEMA_PATH = "#{__dirname}/schemas"  
+  describe 'ExpressAdapter Instantiation', =>
     it 'should create an Adapter Instance', =>
-      (@adapter = Adapter.use app = express()).params.app.should.equal app
-    it 'should register with an API Instance', =>
+      app    = express()
+      router = express.Router()
+      console.log Adapter.use router
+      (@adapter = Adapter.use router).params.app.should.equal router
+    it 'should register with an API Instance', (done)=>
       (api = new API
+        config_path: API.CONFIG_PATH
         adapter:@adapter   
-      ).__adapter.should.equal @adapter
-    
-
+      ).on 'open', (e,s)=>
+        api.__adapter.should.equal @adapter
+        done()
+  describe 'ExpressAdapter Routing', =>
+    app     = express()
+    router  = express.Router()
+    adapter = Adapter.use router
+    it 'should create a route', =>
+      class IndexRoute extends AbstractRoute
+        handler:->
+          false
+      indexRoute = (-> false) #new IndexRoute
+      adapter.addRoute '/', 'get', indexRoute
+      adapter.addRoute '/View1', 'get', indexRoute
+      console.log adapter.params.app.stack[1].route
