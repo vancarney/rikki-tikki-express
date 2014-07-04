@@ -1,5 +1,6 @@
 class ExpressAdapter
   required:['app']
+  constructor:(@params)->
   addRoute:(route, method, handler)->
     @params.app[method]? route, handler || @responseHandler
   responseHandler:(res, data, headers)->
