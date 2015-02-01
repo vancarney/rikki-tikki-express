@@ -17,9 +17,10 @@ class ExpressAdapter
     false
 module.exports = ExpressAdapter
 try 
-  API = require 'rikki-tikki'
+  API = require '../../rikki-tikki' unless (API = require 'rikki-tikki')?
   API.registerAdapter 'express', ExpressAdapter
 catch e
+  console.log e
   console.log 'ExpressAdapter not registered.\nreason: rikki-tikki was not found'
 module.exports.use = (express)=>
   new ExpressAdapter app:express
