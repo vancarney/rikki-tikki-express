@@ -11,7 +11,7 @@ class ExpressAdapter
         res.setHeader header, value
     res
     .status data.status
-    .send data.content
+    .send if data.content then data.content else ""
   requestHandler:->
     # not implemented
     false
